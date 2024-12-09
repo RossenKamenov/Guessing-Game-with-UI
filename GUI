@@ -1,0 +1,64 @@
+import javax.swing.*;
+import java.awt.event.ActionListener;
+import java.util.Random;
+
+public class Main {
+    public static void main(String[] args) {
+        Random rand = new Random();
+        int randomNumber = rand.nextInt(100) + 1;
+        JFrame frame = new JFrame("Number Guessing Game");
+        JTextField inputField = new JTextField(10);
+        JButton guessButton = new JButton("Guess");
+        JButton quitButton = new JButton("Quit");
+        JLabel instructionLabel = new JLabel("Guess a number between 1 and 100:");
+        JLabel feedbackLabel = new JLabel("");
+        JPanel panel = new JPanel();
+
+        frame.setSize(300, 200);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        panel.add(instructionLabel);
+        panel.add(inputField);
+        panel.add(guessButton);
+        panel.add(quitButton);
+        panel.add(feedbackLabel);
+        frame.add(panel);
+
+        final int[] attempts = {0};
+
+        ActionListener guessAction = new ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                String userInput = inputField.getText();
+                try {
+                    int guess = Integer.parseInt(userInput);
+                    attempts[0]++;
+                    if (guess < randomNumber) {
+                        feedbackLabel.setText("Too low! Try again.");
+                    } else if (guess > randomNumber) {
+                        feedbackLabel.setText("Too high! Try again.");
+                    } else {
+                        feedbackLabel.setText("Correct! Attempts: " + attempts[0]);
+                        inputField.setEditable(false);
+                        guessButton.setEnabled(false);
+                    }
+                } catch (NumberFormatException ex) {
+                    feedbackLabel.setText("Invalid input. Enter a number.");
+                }
+                inputField.setText("");
+            }
+        };
+
+        ActionListener quitAction = new ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                feedbackLabel.setText("The correct number was: " + randomNumber);
+                inputField.setEditable(false);
+                guessButton.setEnabled(false);
+            }
+        };
+
+        guessButton.addActionListener(guessAction);
+        quitButton.addActionListener(quitAction);
+
+        frame.setVisible(true);
+    }
+}
